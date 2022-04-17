@@ -13,6 +13,7 @@ main(int argc, char *argv[])
   if(pid > 0){
     //parent
     write(pfds[1], buf, 1);
+    read(cfds[0], buf, 1);
     printf("%d: received pong\n", getpid());
   } else {
     read(pfds[0], buf, 1);
