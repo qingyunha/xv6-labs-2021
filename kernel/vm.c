@@ -490,3 +490,21 @@ vmprint(pagetable_t pagetable) {
     }
   }
 }
+
+int
+pgaccess(pagetable_t pagetable, uint64 va) {
+  for(int level = 2; level > 0; level--) {
+    pte_t pte = pagetable[PX(level, va)];
+    if(pte & PTE_V) {
+      pagetable = (pagetable_t)PTE2PA(pte);
+    } else {
+        return 0;
+    }
+  }
+  pte_t *pte = &pagetable[PX(0, va)];
+  if((*pte & PTE_V) && (*pte & PTE_A)) {
+    *pte &= ~PTE_A;
+    return 1;
+  }
+  return 0;
+}
